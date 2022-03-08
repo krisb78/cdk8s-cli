@@ -48,6 +48,11 @@ export class CustomResourceDefinition {
   private readonly version: string;
   private readonly kind: string;
   private readonly fqn: string;
+  private readonly versions: Array<{
+    name: string;
+    schema?: { openAPIV3Schema?: any };
+    [key: string]: any;
+  }>;
 
   constructor(manifest: ManifestObjectDefinition) {
     const apiVersion = manifest?.apiVersion ?? 'undefined';
@@ -59,7 +64,9 @@ export class CustomResourceDefinition {
       throw new Error('manifest does not have a "spec" attribute');
     }
 
-    const version = spec.version ?? (spec.versions ?? [])[0];
+    const versions = spec.versions ?? [];
+
+    const version = spec.version ?? (versions)[0];
     if (!version) {
       throw new Error('unable to determine CRD version');
     }
